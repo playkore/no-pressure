@@ -1,0 +1,211 @@
+[gd_scene load_steps=10 format=3 uid="uid://c7a4i5d6p1w0n"]
+
+[ext_resource type="Script" uid="uid://ntn4eoakydwj" path="res://scripts/ui/top_hud.gd" id="1_0h3y7"]
+[ext_resource type="Script" uid="uid://c5iaifv12yh18" path="res://scripts/ui/progress_segments.gd" id="2_6b0b6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6m1kq"]
+bg_color = Color(0.0352941, 0.188235, 0.247059, 0.95)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.537255, 0.901961, 0.94902, 1)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tgu4"]
+bg_color = Color(0.952941, 0.8, 0.156863, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.996078, 0.933333, 0.72549, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2bap"]
+bg_color = Color(0.168627, 0.498039, 0.12549, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.847059, 0.972549, 0.760784, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5b0lq"]
+bg_color = Color(0.0588235, 0.301961, 0.376471, 0.95)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3l2x7"]
+bg_color = Color(0.141176, 0.160784, 0.168627, 0.9)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.537255, 0.901961, 0.94902, 1)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7k0k3"]
+bg_color = Color(0.666667, 0.901961, 0.235294, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4d2n2"]
+bg_color = Color(0.74902, 0.145098, 0.137255, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.996078, 0.8, 0.8, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 8
+
+[node name="TopHud" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_0h3y7")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SafeTop" type="MarginContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 112.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+
+[node name="BarRow" type="HBoxContainer" parent="Root/SafeTop"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="MoneyOuter" type="PanelContainer" parent="Root/SafeTop/BarRow"]
+custom_minimum_size = Vector2(300, 96)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_6m1kq")
+
+[node name="MoneyInner" type="MarginContainer" parent="Root/SafeTop/BarRow/MoneyOuter"]
+layout_mode = 2
+
+[node name="MoneyRow" type="HBoxContainer" parent="Root/SafeTop/BarRow/MoneyOuter/MoneyInner"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CoinOuter" type="PanelContainer" parent="Root/SafeTop/BarRow/MoneyOuter/MoneyInner/MoneyRow"]
+custom_minimum_size = Vector2(76, 76)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0tgu4")
+
+[node name="CoinLabel" type="Label" parent="Root/SafeTop/BarRow/MoneyOuter/MoneyInner/MoneyRow/CoinOuter"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.396078, 0.25098, 0.0392157, 1)
+theme_override_colors/font_outline_color = Color(0.996078, 0.933333, 0.72549, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 44
+text = "$"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MoneyValueOuter" type="PanelContainer" parent="Root/SafeTop/BarRow/MoneyOuter/MoneyInner/MoneyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_l2bap")
+
+[node name="MoneyValueInner" type="PanelContainer" parent="Root/SafeTop/BarRow/MoneyOuter/MoneyInner/MoneyRow/MoneyValueOuter"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5b0lq")
+
+[node name="MoneyLabel" type="Label" parent="Root/SafeTop/BarRow/MoneyOuter/MoneyInner/MoneyRow/MoneyValueOuter/MoneyValueInner"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.0352941, 0.188235, 0.247059, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 36
+text = "3,270"
+vertical_alignment = 1
+
+[node name="ProgressOuter" type="PanelContainer" parent="Root/SafeTop/BarRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_3l2x7")
+
+[node name="ProgressInner" type="MarginContainer" parent="Root/SafeTop/BarRow/ProgressOuter"]
+layout_mode = 2
+
+[node name="ProgressStack" type="Control" parent="Root/SafeTop/BarRow/ProgressOuter/ProgressInner"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="Root/SafeTop/BarRow/ProgressOuter/ProgressInner/ProgressStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_5b0lq")
+theme_override_styles/fill = SubResource("StyleBoxFlat_7k0k3")
+max_value = 1.0
+show_percentage = false
+
+[node name="Segments" type="Control" parent="Root/SafeTop/BarRow/ProgressOuter/ProgressInner/ProgressStack"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_6b0b6")
+
+[node name="PauseButton" type="PanelContainer" parent="Root/SafeTop/BarRow"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4d2n2")
+
+[node name="PauseLabel" type="Label" parent="Root/SafeTop/BarRow/PauseButton"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.286275, 0.0666667, 0.0666667, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 40
+text = "II"
+horizontal_alignment = 1
+vertical_alignment = 1

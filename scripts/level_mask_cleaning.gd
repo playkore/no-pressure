@@ -1,6 +1,7 @@
 extends Node
 
 signal level_completed
+signal progress_changed(ratio: float)
 
 @export_range(0.0, 1.0, 0.001) var completion_ratio := 0.95
 @export_range(0.0, 5000.0, 1.0, "or_greater") var water_strength_grades_per_second := 1000.0
@@ -17,6 +18,7 @@ var _mask_image: Image
 var _mask_texture: ImageTexture
 var _total_pixels := 0
 var _clean_pixels := 0
+var _progress_ratio := 0.0
 
 @onready var _dirty_sprite: Sprite2D = get_node(dirty_sprite_path)
 @onready var _clean_sprite: Sprite2D = get_node(clean_sprite_path)
@@ -40,6 +42,7 @@ func _process(delta: float) -> void:
 	var changed := _apply_water(delta)
 	if changed:
 		_mask_texture.update(_mask_image)
+		_update_progress()
 		_check_completion()
 
 
@@ -138,6 +141,20 @@ func _check_completion() -> void:
 	if ratio >= completion_ratio:
 		level_complete = true
 		level_completed.emit()
+
+
+func _update_progress() -> void:
+	if _total_pixels <= 0:
+		return
+	var ratio := float(_clean_pixels) / float(_total_pixels)
+	if absf(ratio - _progress_ratio) < 0.0001:
+		return
+	_progress_ratio = ratio
+	progress_changed.emit(_progress_ratio)
+
+
+func get_progress_ratio() -> float:
+	return _progress_ratio
 
 
 func _is_spraying() -> bool:
