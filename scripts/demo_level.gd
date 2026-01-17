@@ -3,8 +3,9 @@ extends Node2D
 signal level_completed(time_ms: int, stars: int)
 
 @export var initial_powerwasher_anchor := Vector2(0.78, 0.78)
-@export_range(0, 600000, 100, "or_greater") var stars_threshold_3_ms := 25000
-@export_range(0, 600000, 100, "or_greater") var stars_threshold_2_ms := 45000
+@export_range(0.0, 3600.0, 0.1, "or_greater") var star_time_1_seconds := 90.0
+@export_range(0.0, 3600.0, 0.1, "or_greater") var star_time_2_seconds := 60.0
+@export_range(0.0, 3600.0, 0.1, "or_greater") var star_time_3_seconds := 35.0
 
 @onready var clean: Sprite2D = $Clean
 @onready var dirty: Sprite2D = $Dirty
@@ -13,6 +14,8 @@ signal level_completed(time_ms: int, stars: int)
 
 var _timer_running := false
 var _start_ms := 0
+var _elapsed_ms := 0
+var _level_finished := false
 
 
 func _ready() -> void:
@@ -48,26 +51,42 @@ func _fit_level_art(viewport_size: Vector2) -> void:
 
 
 func _process(_delta: float) -> void:
+	if _level_finished:
+		return
 	if _timer_running:
+		_elapsed_ms = max(0, Time.get_ticks_msec() - _start_ms)
 		return
 	if power_washer.has_method("is_spraying") and bool(power_washer.call("is_spraying")):
 		_timer_running = true
 		_start_ms = Time.get_ticks_msec()
+		_elapsed_ms = 0
 
 
 func _on_level_completed() -> void:
-	var time_ms := 0
+	var time_ms := _elapsed_ms
 	if _timer_running:
 		time_ms = max(0, Time.get_ticks_msec() - _start_ms)
+		_elapsed_ms = time_ms
+	_timer_running = false
+	_level_finished = true
+	if power_washer.has_method("stop_spraying"):
+		power_washer.call("stop_spraying")
 	var stars := _compute_stars(time_ms)
 	level_completed.emit(time_ms, stars)
 
 
 func _compute_stars(time_ms: int) -> int:
-	if time_ms <= 0:
-		return 1
-	if time_ms <= stars_threshold_3_ms:
+	var seconds := float(time_ms) / 1000.0
+	if star_time_3_seconds > 0.0 and seconds <= star_time_3_seconds:
 		return 3
-	if time_ms <= stars_threshold_2_ms:
+	if star_time_2_seconds > 0.0 and seconds <= star_time_2_seconds:
 		return 2
-	return 1
+	if star_time_1_seconds > 0.0 and seconds <= star_time_1_seconds:
+		return 1
+	return 0
+
+
+func get_elapsed_seconds() -> float:
+	if _timer_running:
+		return float(maxi(0, Time.get_ticks_msec() - _start_ms)) / 1000.0
+	return float(_elapsed_ms) / 1000.0

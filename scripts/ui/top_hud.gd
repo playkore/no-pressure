@@ -1,14 +1,16 @@
 extends CanvasLayer
 
 @export var cleaning_path: NodePath
-@export var initial_money := 3270
+@export var timer_path: NodePath
 
 @onready var _money_label: Label = %MoneyLabel
 @onready var _progress_bar: ProgressBar = %ProgressBar
 
+var _timer_node: Node
+
 
 func _ready() -> void:
-	set_money(initial_money)
+	_money_label.text = "0.0s"
 	set_progress(0.0)
 
 	if cleaning_path != NodePath():
@@ -19,9 +21,16 @@ func _ready() -> void:
 			if cleaning.has_method("get_progress_ratio"):
 				set_progress(float(cleaning.call("get_progress_ratio")))
 
+	if timer_path != NodePath():
+		_timer_node = get_node_or_null(timer_path)
 
-func set_money(value: int) -> void:
-	_money_label.text = _format_money(value)
+
+func _process(_delta: float) -> void:
+	if _timer_node == null:
+		return
+	if _timer_node.has_method("get_elapsed_seconds"):
+		var seconds := float(_timer_node.call("get_elapsed_seconds"))
+		_money_label.text = "%.1fs" % seconds
 
 
 func set_progress(ratio: float) -> void:
@@ -30,15 +39,3 @@ func set_progress(ratio: float) -> void:
 
 func _on_progress_changed(ratio: float) -> void:
 	set_progress(ratio)
-
-
-func _format_money(value: int) -> String:
-	var s := str(maxi(value, 0))
-	var out := ""
-	var count := 0
-	for i in range(s.length() - 1, -1, -1):
-		out = s[i] + out
-		count += 1
-		if count % 3 == 0 and i != 0:
-			out = "," + out
-	return out

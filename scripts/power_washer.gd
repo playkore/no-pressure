@@ -90,6 +90,10 @@ func get_contact_radius_px() -> float:
 	return contact_radius_px
 
 
+func stop_spraying() -> void:
+	has_target = false
+
+
 func _apply_contact_radius() -> void:
 	if water_contact_shape == null:
 		return

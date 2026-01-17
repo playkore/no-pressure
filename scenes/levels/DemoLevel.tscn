@@ -43,3 +43,4 @@ water_contact_path = NodePath("../PowerWasher/WaterContact")
 
 [node name="TopHud" parent="." instance=ExtResource("6_7sylp")]
 cleaning_path = NodePath("../MaskCleaning")
+timer_path = NodePath("..")
