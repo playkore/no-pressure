@@ -11,17 +11,20 @@ config_version=5
 [application]
 
 config/name="No Pressure"
+run/main_scene="res://scenes/app/AppRoot.tscn"
 config/features=PackedStringArray("4.5", "Mobile")
-run/main_scene="res://scenes/levels/DemoLevel.tscn"
 config/icon="res://icon.svg"
+
+[autoload]
+
+SaveData="*res://scripts/save/save_data.gd"
 
 [display]
 
 window/size/viewport_width=720
 window/size/viewport_height=1280
-window/handheld/orientation=1
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
+window/handheld/orientation=1
 
 [rendering]
 

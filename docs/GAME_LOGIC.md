@@ -163,3 +163,95 @@ Additionally, spawn small circle “droplets”:
 ### Strength Coupling (Optional)
 Later, we can map `water_strength_grades_per_second` to VFX:
 - Higher strength → higher droplet spawn rate and slightly higher speeds (clamped).
+
+## Scene Flow + Transitions
+
+This section defines how the player moves through the app and how we transition between scenes.
+
+### Scene Overview
+Recommended top-level scenes (names are suggestions):
+- `scenes/app/AppRoot.tscn`: one persistent root that owns navigation and overlays.
+- `scenes/menus/LevelSelect.tscn`: initial screen (list/grid of levels).
+- `scenes/levels/<LevelName>.tscn`: gameplay scenes (e.g. `DemoLevel.tscn`).
+- `scenes/overlays/LevelCompleteOverlay.tscn`: modal overlay shown on completion (stars + time + buttons).
+
+### App Startup
+On app start:
+1. Load save data (stars/time per level).
+2. Show `LevelSelect` as the first screen.
+
+Rationale:
+- Mobile games typically drop the player into “choose a task” quickly.
+- LevelSelect is the natural hub and is where we show long-term progress.
+
+### Level Select
+LevelSelect responsibilities:
+- Display each level tile with:
+  - Level name/thumbnail.
+  - Best star rating (`0..3`).
+  - Best completion time (or “—” if never completed).
+- On tap:
+  - Transition into the level scene.
+
+Transition style (simple + scalable):
+- Fade out LevelSelect → load level → fade in level.
+
+### Playing a Level
+Level scene responsibilities:
+- Run gameplay + cleaning logic.
+- Track elapsed time from “first spray” or from “level shown” (define this per design; default: from first spray).
+- Emit a completion event when the completion condition hits.
+
+The level should not directly change scenes. It should signal the app layer.
+
+### Level Completion
+When the level completes:
+1. Freeze or disable gameplay input (stop spraying; stop mask painting; optionally dim the scene).
+2. Show `LevelCompleteOverlay` as an overlay on top of the current level.
+
+Overlay contents (now and future):
+- Now: “Congratulations” + `Continue` + `Retry` + `Levels` buttons.
+- Future: show `stars (1–3)` + `time` + optionally coins earned.
+
+Recommended behavior:
+- `Continue`: go back to LevelSelect (or auto-advance to next unlocked level later).
+- `Retry`: reload the same level.
+- `Levels`: return to LevelSelect.
+
+### Stars + Time (Design)
+We will store two things per level:
+- `best_stars: int (0..3)`
+- `best_time_ms: int` (lower is better)
+
+How to compute stars (initial proposal; tune later):
+- Stars depend on completion time:
+  - `3 stars` if `time_ms <= threshold_3`
+  - `2 stars` if `time_ms <= threshold_2`
+  - `1 star` otherwise (but only if completed)
+- Thresholds are per-level exported values (so each level can be tuned independently).
+
+Time tracking:
+- Start timer at “first spray” (first touch down that begins washing).
+- Stop timer on completion.
+
+Saving rules:
+- Always keep the maximum stars achieved.
+- For the time, store the best time for the achieved star tier (or always the best time overall; pick one policy and keep it consistent).
+  - Suggested: always store best time overall, and stars are independent.
+
+### Persistence (Save Data)
+Store progress locally (no network) via `ConfigFile` or a small JSON:
+- Keyed by `level_id` (stable string like `"demo"`).
+- Data:
+  - `best_stars`
+  - `best_time_ms`
+  - optional later: `best_money`, `unlocked`, etc.
+
+### Implementation Boundaries (Recommended)
+- Gameplay code emits signals:
+  - `level_completed(time_ms, stars)` (or completion + separate query methods).
+- Navigation is handled by a single app-level controller (autoload or `AppRoot` node):
+  - Loads/unloads scenes.
+  - Manages fade transitions.
+  - Shows/hides overlays.
+  - Updates save data.

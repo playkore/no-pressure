@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4approot00001"]
+
+[ext_resource type="Script" path="res://scripts/app/app_root.gd" id="1_6w0yp"]
+
+[node name="AppRoot" type="Node"]
+script = ExtResource("1_6w0yp")
+
+[node name="World" type="Node" parent="."]
+
+[node name="Overlay" type="CanvasLayer" parent="."]
+layer = 50
+
+[node name="Fade" type="ColorRect" parent="Overlay"]
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+mouse_filter = 2
+

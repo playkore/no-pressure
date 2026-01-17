@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1levelselect01"]
+
+[ext_resource type="Script" path="res://scripts/menus/level_select.gd" id="1_2bq3v"]
+
+[node name="LevelSelect" type="Control"]
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2bq3v")
+
+[node name="Root" type="MarginContainer" parent="."]
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
+
+[node name="VBox" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Root/VBox"]
+layout_mode = 2
+text = "Levels"
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 6
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.5)
+
+[node name="LevelList" type="VBoxContainer" parent="Root/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+

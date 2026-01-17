@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1levelcomplete01"]
+
+[ext_resource type="Script" path="res://scripts/overlays/level_complete_overlay.gd" id="1_9g5u0"]
+
+[node name="LevelCompleteOverlay" type="CanvasLayer"]
+layer = 60
+script = ExtResource("1_9g5u0")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.35)
+mouse_filter = 0
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(520, 0)
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Congratulations!"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 40
+
+[node name="Stars" type="Label" parent="Center/Panel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "★★★"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+
+[node name="Time" type="Label" parent="Center/Panel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Time: 0.00s"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+
+[node name="Buttons" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Retry" type="Button" parent="Center/Panel/Margin/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Retry"
+
+[node name="Levels" type="Button" parent="Center/Panel/Margin/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Levels"
+
+[node name="Continue" type="Button" parent="Center/Panel/Margin/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Continue"
+
