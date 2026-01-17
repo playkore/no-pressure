@@ -1,27 +1,37 @@
-[gd_scene load_steps=2 format=3 uid="uid://c1levelcomplete01"]
+[gd_scene load_steps=2 format=3 uid="uid://b4eruhgga54j5"]
 
-[ext_resource type="Script" path="res://scripts/overlays/level_complete_overlay.gd" id="1_9g5u0"]
+[ext_resource type="Script" uid="uid://ba0oygi2d8238" path="res://scripts/overlays/level_complete_overlay.gd" id="1_9g5u0"]
 
 [node name="LevelCompleteOverlay" type="CanvasLayer"]
 layer = 60
 script = ExtResource("1_9g5u0")
 
 [node name="Dim" type="ColorRect" parent="."]
-anchors_preset = 15
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.35)
-mouse_filter = 0
 
 [node name="Center" type="CenterContainer" parent="."]
-anchors_preset = 15
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -132.5
+offset_right = 260.0
+offset_bottom = 132.5
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Panel" type="PanelContainer" parent="Center"]
 custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
 theme_override_constants/margin_left = 24
 theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
@@ -33,23 +43,23 @@ theme_override_constants/separation = 14
 
 [node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Congratulations!"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 40
 
 [node name="Stars" type="Label" parent="Center/Panel/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 36
 text = "★★★"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 36
 
 [node name="Time" type="Label" parent="Center/Panel/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "Time: 0.00s"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 28
 
 [node name="Buttons" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
@@ -72,4 +82,3 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Continue"
-
