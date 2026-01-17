@@ -3,7 +3,7 @@ extends Node2D
 @export var initial_powerwasher_anchor := Vector2(0.78, 0.78)
 
 @onready var background: Sprite2D = $Background
-@onready var power_washer: Sprite2D = $PowerWasher
+@onready var power_washer: Node2D = $PowerWasher
 
 
 func _ready() -> void:
@@ -18,8 +18,6 @@ func _layout() -> void:
 
 	_fit_background(viewport_size)
 	power_washer.global_position = viewport_size * initial_powerwasher_anchor
-	power_washer.scale = Vector2.ONE
-	power_washer.rotation = 0.0
 
 
 func _fit_background(viewport_size: Vector2) -> void:

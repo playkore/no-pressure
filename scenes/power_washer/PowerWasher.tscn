@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://d2g1o1w6w8c4n"]
+
+[ext_resource type="Texture2D" uid="uid://r4brv7k0kym6" path="res://assets/powerwasher.png" id="1_l1p8s"]
+[ext_resource type="Script" uid="uid://c4xmcq2c2ho1" path="res://scripts/power_washer.gd" id="2_t66qv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0d3rq"]
+radius = 40.792156
+
+[node name="PowerWasher" type="Node2D"]
+script = ExtResource("2_t66qv")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_l1p8s")
+centered = false
+
+[node name="Nozzle" type="Marker2D" parent="."]
+position = Vector2(4, 7)
+
+[node name="WaterContact" type="Area2D" parent="."]
+position = Vector2(-354, -114)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WaterContact"]
+shape = SubResource("CircleShape2D_0d3rq")
