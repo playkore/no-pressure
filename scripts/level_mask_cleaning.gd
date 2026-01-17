@@ -8,6 +8,7 @@ signal progress_changed(ratio: float)
 
 @export var dirty_sprite_path: NodePath
 @export var clean_sprite_path: NodePath
+@export var initial_requirement_mask_texture: Texture2D
 
 @export var power_washer_path: NodePath
 @export var water_contact_path: NodePath
@@ -19,6 +20,7 @@ var _mask_texture: ImageTexture
 var _total_pixels := 0
 var _clean_pixels := 0
 var _progress_ratio := 0.0
+var _require_image: Image
 
 @onready var _dirty_sprite: Sprite2D = get_node(dirty_sprite_path)
 @onready var _clean_sprite: Sprite2D = get_node(clean_sprite_path)
@@ -29,6 +31,7 @@ var _progress_ratio := 0.0
 func _ready() -> void:
 	_setup_mask()
 	_setup_material()
+	_update_progress()
 
 
 func _process(delta: float) -> void:
@@ -51,11 +54,37 @@ func _setup_mask() -> void:
 		push_error("Dirty sprite has no texture.")
 		return
 
-	var size := _dirty_sprite.texture.get_size()
+	var size: Vector2i = _dirty_sprite.texture.get_size()
 	_mask_image = Image.create(size.x, size.y, false, Image.FORMAT_L8)
-	_mask_image.fill(Color(0, 0, 0))
+	_require_image = Image.create(size.x, size.y, false, Image.FORMAT_L8)
+
+	if initial_requirement_mask_texture != null:
+		var init_img := initial_requirement_mask_texture.get_image()
+		var init_size: Vector2i = init_img.get_size()
+		if init_size != size:
+			push_error("Initial requirement mask size does not match dirty texture.")
+			_mask_image.fill(Color(0, 0, 0))
+			_require_image.fill(Color(1, 0, 0))
+			_total_pixels = int(size.x * size.y)
+		else:
+			_total_pixels = 0
+			for y in range(size.y):
+				for x in range(size.x):
+					var v := init_img.get_pixel(x, y).r
+					var needs_cleaning := v >= 0.5
+					if needs_cleaning:
+						_mask_image.set_pixel(x, y, Color(0, 0, 0))
+						_require_image.set_pixel(x, y, Color(1, 0, 0))
+						_total_pixels += 1
+					else:
+						_mask_image.set_pixel(x, y, Color(1, 0, 0))
+						_require_image.set_pixel(x, y, Color(0, 0, 0))
+	else:
+		_mask_image.fill(Color(0, 0, 0))
+		_require_image.fill(Color(1, 0, 0))
+		_total_pixels = int(size.x * size.y)
+
 	_mask_texture = ImageTexture.create_from_image(_mask_image)
-	_total_pixels = int(size.x * size.y)
 	_clean_pixels = 0
 
 
@@ -105,6 +134,9 @@ func _apply_water(delta: float) -> bool:
 
 	for y in range(min_y, max_y + 1):
 		for x in range(min_x, max_x + 1):
+			if _require_image != null and _require_image.get_pixel(x, y).r < 0.5:
+				continue
+
 			var dx := float(x) - contact_tex.x
 			var dy := float(y) - contact_tex.y
 			var dist := sqrt(dx * dx + dy * dy)
@@ -136,6 +168,9 @@ func _apply_water(delta: float) -> bool:
 
 func _check_completion() -> void:
 	if _total_pixels <= 0:
+		if not level_complete:
+			level_complete = true
+			level_completed.emit()
 		return
 	var ratio := float(_clean_pixels) / float(_total_pixels)
 	if ratio >= completion_ratio:
@@ -145,6 +180,9 @@ func _check_completion() -> void:
 
 func _update_progress() -> void:
 	if _total_pixels <= 0:
+		if _progress_ratio != 1.0:
+			_progress_ratio = 1.0
+			progress_changed.emit(_progress_ratio)
 		return
 	var ratio := float(_clean_pixels) / float(_total_pixels)
 	if absf(ratio - _progress_ratio) < 0.0001:

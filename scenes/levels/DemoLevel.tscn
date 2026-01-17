@@ -7,6 +7,7 @@
 [ext_resource type="Shader" uid="uid://ds7lppumrs3op" path="res://shaders/dirty_reveal.gdshader" id="4_3kmpq"]
 [ext_resource type="Script" uid="uid://bp2e70o1cjn8a" path="res://scripts/level_mask_cleaning.gd" id="5_3d3y3"]
 [ext_resource type="PackedScene" uid="uid://c7a4i5d6p1w0n" path="res://scenes/ui/TopHud.tscn" id="6_7sylp"]
+[ext_resource type="Texture2D" path="res://assets/levels/demo/mask.png" id="7_1c2p3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lx7qe"]
 shader = ExtResource("4_3kmpq")
@@ -30,6 +31,7 @@ script = ExtResource("5_3d3y3")
 water_strength_grades_per_second = 10000.0
 dirty_sprite_path = NodePath("../Dirty")
 clean_sprite_path = NodePath("../Clean")
+initial_requirement_mask_texture = ExtResource("7_1c2p3")
 power_washer_path = NodePath("../PowerWasher")
 water_contact_path = NodePath("../PowerWasher/WaterContact")
 
