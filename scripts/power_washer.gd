@@ -11,7 +11,6 @@ extends Node2D
 
 var has_target := false
 var target_point := Vector2.ZERO
-var _drag_offset := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -38,7 +37,6 @@ func _input(event: InputEvent) -> void:
 func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 	if event.pressed:
 		has_target = true
-		_drag_offset = global_position - event.position
 		_set_target(event.position)
 		return
 
@@ -58,7 +56,6 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 
 	if event.pressed:
 		has_target = true
-		_drag_offset = global_position - event.position
 		_set_target(event.position)
 	else:
 		has_target = false
@@ -72,17 +69,25 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 
 func set_target_point(pos: Vector2) -> void:
 	has_target = true
-	_drag_offset = global_position - pos
 	_set_target(pos)
 
 
 func _set_target(pos: Vector2) -> void:
 	var viewport_rect := get_viewport().get_visible_rect()
+	var mid_x := (viewport_rect.position.x + viewport_rect.end.x) * 0.5
+	var bottom_y := viewport_rect.end.y
+
+	var mapped_x := mid_x + 2.0 * (pos.x - mid_x)
+	var mapped_y := bottom_y - 2.0 * (bottom_y - pos.y)
+
+	target_point = Vector2(mapped_x, mapped_y)
 	target_point = Vector2(
-		clampf(pos.x, viewport_rect.position.x, viewport_rect.end.x),
-		clampf(pos.y, viewport_rect.position.y, viewport_rect.end.y)
+		clampf(target_point.x, viewport_rect.position.x, viewport_rect.end.x),
+		clampf(target_point.y, viewport_rect.position.y, viewport_rect.end.y)
 	)
-	global_position = target_point + _drag_offset
+
+	var delta := target_point - water_contact.global_position
+	global_position += delta
 
 
 func is_spraying() -> bool:
