@@ -1,10 +1,13 @@
 extends CanvasLayer
 
+signal pause_pressed
+
 @export var cleaning_path: NodePath
 @export var timer_path: NodePath
 
 @onready var _money_label: Label = %MoneyLabel
 @onready var _progress_bar: ProgressBar = %ProgressBar
+@onready var _pause_button: BaseButton = %PauseButton
 
 var _timer_node: Node
 
@@ -12,6 +15,7 @@ var _timer_node: Node
 func _ready() -> void:
 	_money_label.text = "0.0s"
 	set_progress(0.0)
+	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
 
 	if cleaning_path != NodePath():
 		var cleaning := get_node_or_null(cleaning_path)

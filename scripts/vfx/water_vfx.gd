@@ -184,3 +184,9 @@ func _is_spraying() -> bool:
 		return bool(_power_washer.call("is_spraying"))
 	return false
 
+
+func stop_and_hide() -> void:
+	_droplets.clear()
+	_spawn_accum = 0.0
+	visible = false
+	set_process(false)

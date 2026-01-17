@@ -39,6 +39,7 @@ func _build_list() -> void:
 			if _app != null and _app.has_method("start_level"):
 				_app.call("start_level", id, scene_path)
 		)
+		button.focus_mode = Control.FOCUS_NONE
 
 		list.add_child(button)
 

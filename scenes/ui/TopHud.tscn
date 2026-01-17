@@ -196,17 +196,17 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_6b0b6")
 
-[node name="PauseButton" type="PanelContainer" parent="Root/SafeTop/BarRow"]
+[node name="PauseButton" type="Button" parent="Root/SafeTop/BarRow"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4d2n2")
-
-[node name="PauseLabel" type="Label" parent="Root/SafeTop/BarRow/PauseButton"]
-layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.286275, 0.0666667, 0.0666667, 1)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_4d2n2")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4d2n2")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4d2n2")
 text = "II"
-horizontal_alignment = 1
-vertical_alignment = 1
