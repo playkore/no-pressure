@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2j1u1xvfxw4r"]
+
+[ext_resource type="Script" path="res://scripts/vfx/water_vfx.gd" id="1_q7twp"]
+
+[node name="WaterVfx" type="Node2D"]
+z_index = 5
+script = ExtResource("1_q7twp")
+

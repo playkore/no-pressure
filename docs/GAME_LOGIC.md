@@ -102,3 +102,52 @@ Definition:
   - `clean_visible_pixels / total_pixels >= 0.95`
 
 No UI is shown yet; completion can be a boolean state (e.g. emit a signal or log for now).
+
+## Water Stream + Particles (VFX, No Textures)
+
+For the first iteration, we avoid textures entirely and draw everything with lines and circles.
+
+We visualize spraying with two layers:
+1. A continuous **water stream** from the washer nozzle to the water contact point.
+2. **Impact dots** emitted at the contact point and moving away from it.
+
+### Required Scene Points
+The power washer scene provides:
+- `Nozzle` (`Marker2D`): where the stream originates.
+- `WaterContact` (`Area2D`): where the stream hits the level (kept under the finger).
+
+All VFX are driven by:
+- `nozzle_pos = Nozzle.global_position`
+- `contact_pos = WaterContact.global_position`
+
+### Stream Rendering (Lines)
+The stream is a segment `nozzle_pos → contact_pos`.
+
+Suggested drawing (each frame while spraying):
+- Draw a thick, semi-transparent “glow” line first.
+- Draw a slightly thinner bright line on top.
+- Draw 2–5 extra thin lines with small perpendicular offsets (“multi-jet” look).
+  - Offsets should jitter smoothly per frame, not teleport.
+
+Visibility:
+- Stream is visible only while spraying (finger down).
+
+### Impact VFX (Circles)
+At `contact_pos`:
+- Draw a soft filled circle (low alpha).
+- Draw a ring (arc) for a “splash” highlight.
+
+Additionally, spawn small circle “droplets”:
+- Each droplet has `pos`, `vel`, `life`, `age`, `radius`.
+- Spawn while spraying; update each frame; fade alpha as `age / life` increases.
+- Emit mostly back toward the player (opposite the stream direction) with a random cone spread:
+  - `stream_dir = (contact_pos - nozzle_pos).normalized()`
+  - `emit_dir ~= -stream_dir` with angular variance
+
+### Layering / Z-Order
+- Draw VFX above the level art but below UI.
+- UI is on a `CanvasLayer` above everything.
+
+### Strength Coupling (Optional)
+Later, we can map `water_strength_grades_per_second` to VFX:
+- Higher strength → higher droplet spawn rate and slightly higher speeds (clamped).
