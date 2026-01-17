@@ -10,10 +10,10 @@ config_version=5
 
 [application]
 
-config/name="No Pressure"
+config/name="nopressure"
 run/main_scene="res://scenes/app/AppRoot.tscn"
 config/features=PackedStringArray("4.5", "Mobile")
-config/icon="res://icon.svg"
+config/icon="uid://d1wajdcq0knx0"
 
 [autoload]
 
@@ -29,3 +29,4 @@ window/handheld/orientation=1
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
