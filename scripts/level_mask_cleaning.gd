@@ -56,33 +56,28 @@ func _setup_mask() -> void:
 
 	var size: Vector2i = _dirty_sprite.texture.get_size()
 	_mask_image = Image.create(size.x, size.y, false, Image.FORMAT_L8)
-	_require_image = Image.create(size.x, size.y, false, Image.FORMAT_L8)
+	_mask_image.fill(Color(0, 0, 0))
 
-	if initial_requirement_mask_texture != null:
+	_total_pixels = 0
+	_require_image = null
+
+	if initial_requirement_mask_texture == null:
+		_total_pixels = int(size.x * size.y)
+	else:
 		var init_img := initial_requirement_mask_texture.get_image()
 		var init_size: Vector2i = init_img.get_size()
 		if init_size != size:
-			push_error("Initial requirement mask size does not match dirty texture.")
-			_mask_image.fill(Color(0, 0, 0))
-			_require_image.fill(Color(1, 0, 0))
+			push_error("Progress mask size does not match dirty texture; falling back to full-image progress.")
 			_total_pixels = int(size.x * size.y)
 		else:
-			_total_pixels = 0
+			_require_image = Image.create(size.x, size.y, false, Image.FORMAT_L8)
 			for y in range(size.y):
 				for x in range(size.x):
 					var v := init_img.get_pixel(x, y).r
-					var needs_cleaning := v >= 0.5
-					if needs_cleaning:
-						_mask_image.set_pixel(x, y, Color(0, 0, 0))
-						_require_image.set_pixel(x, y, Color(1, 0, 0))
+					var counts_for_progress := v >= 0.5
+					_require_image.set_pixel(x, y, Color(1, 0, 0) if counts_for_progress else Color(0, 0, 0))
+					if counts_for_progress:
 						_total_pixels += 1
-					else:
-						_mask_image.set_pixel(x, y, Color(1, 0, 0))
-						_require_image.set_pixel(x, y, Color(0, 0, 0))
-	else:
-		_mask_image.fill(Color(0, 0, 0))
-		_require_image.fill(Color(1, 0, 0))
-		_total_pixels = int(size.x * size.y)
 
 	_mask_texture = ImageTexture.create_from_image(_mask_image)
 	_clean_pixels = 0
@@ -134,9 +129,6 @@ func _apply_water(delta: float) -> bool:
 
 	for y in range(min_y, max_y + 1):
 		for x in range(min_x, max_x + 1):
-			if _require_image != null and _require_image.get_pixel(x, y).r < 0.5:
-				continue
-
 			var dx := float(x) - contact_tex.x
 			var dy := float(y) - contact_tex.y
 			var dist := sqrt(dx * dx + dy * dy)
@@ -159,11 +151,17 @@ func _apply_water(delta: float) -> bool:
 				continue
 
 			_mask_image.set_pixel(x, y, Color(new_v / 255.0, 0, 0))
-			if old_v < 255 and new_v >= 255:
+			if old_v < 255 and new_v >= 255 and _counts_for_progress(x, y):
 				_clean_pixels += 1
 			changed = true
 
 	return changed
+
+
+func _counts_for_progress(x: int, y: int) -> bool:
+	if _require_image == null:
+		return true
+	return _require_image.get_pixel(x, y).r >= 0.5
 
 
 func _check_completion() -> void:

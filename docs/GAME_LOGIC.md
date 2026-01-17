@@ -54,6 +54,16 @@ We render two images:
 
 The clean layer is revealed by a mask that is “painted” by the moving `WaterContact` point.
 
+### Progress Mask (Scoring Area)
+We also have a separate black/white image:
+- `res://assets/levels/demo/mask.png`
+
+This image does **not** define initial cleanliness. It defines which pixels count toward progress/score:
+- White pixels (`>= 0.5`) = counted toward progress
+- Black pixels (`< 0.5`) = ignored for progress
+
+You can still clean pixels outside this region; they just don’t add progress.
+
 ### Mask Model
 - The mask is an 8-bit grayscale image the same resolution as the level art (one pixel per texel).
 - Each mask pixel has **256 grades**: `0..255`
@@ -61,7 +71,7 @@ The clean layer is revealed by a mask that is “painted” by the moving `Water
   - `255` = fully clean (clean image fully visible)
 
 Mask initialization:
-- Start the level with all pixels at `0` (fully dirty everywhere).
+- Start the level with all pixels at `0` (fully dirty everywhere), regardless of `mask.png`.
 
 ### Water Strength
 Define `water_strength` as:
@@ -97,9 +107,11 @@ Implementation options in Godot:
 The level is complete when at least **95%** of the pixels are “clean enough”.
 
 Definition:
+- Only pixels inside the progress mask participate:
+  - `progress_total = count(mask.png is white)`
+  - `progress_clean = count(mask[p] >= 255 AND mask.png is white)`
 - A pixel is considered “visible clean” when `mask[p] >= 255` (or a slightly lower threshold like `>= 230` if we want softer completion later).
-- Completion is reached when:
-  - `clean_visible_pixels / total_pixels >= 0.95`
+- Completion is reached when `progress_clean / progress_total >= 0.95`.
 
 No UI is shown yet; completion can be a boolean state (e.g. emit a signal or log for now).
 
