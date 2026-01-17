@@ -1,3 +1,4 @@
+class_name PowerWasher
 extends Node2D
 
 @export_range(1.0, 256.0, 1.0, "or_greater") var contact_radius_px := 20.0:
@@ -79,6 +80,14 @@ func _set_target(pos: Vector2) -> void:
 	)
 	var delta := target_point - water_contact.global_position
 	global_position += delta
+
+
+func is_spraying() -> bool:
+	return has_target
+
+
+func get_contact_radius_px() -> float:
+	return contact_radius_px
 
 
 func _apply_contact_radius() -> void:

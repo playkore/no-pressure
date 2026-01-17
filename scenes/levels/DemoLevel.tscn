@@ -1,14 +1,33 @@
-[gd_scene load_steps=3 format=3 uid="uid://c1m3m5a7r6r8o"]
+[gd_scene load_steps=8 format=3 uid="uid://c1m3m5a7r6r8o"]
 
-[ext_resource type="Texture2D" path="res://assets/levels/demo/dirty.png" id="1_hn0ad"]
-[ext_resource type="Script" path="res://scripts/demo_level.gd" id="2_k0kt4"]
-[ext_resource type="PackedScene" path="res://scenes/power_washer/PowerWasher.tscn" id="3_r6w5h"]
+[ext_resource type="Texture2D" uid="uid://nmir3qk8u5gj" path="res://assets/levels/demo/dirty.png" id="1_hn0ad"]
+[ext_resource type="Texture2D" uid="uid://kfn10accr8jj" path="res://assets/levels/demo/clean.png" id="2_7mb11"]
+[ext_resource type="Script" uid="uid://cblewqk6pcqx5" path="res://scripts/demo_level.gd" id="2_k0kt4"]
+[ext_resource type="PackedScene" uid="uid://d2g1o1w6w8c4n" path="res://scenes/power_washer/PowerWasher.tscn" id="3_r6w5h"]
+[ext_resource type="Shader" uid="uid://ds7lppumrs3op" path="res://shaders/dirty_reveal.gdshader" id="4_3kmpq"]
+[ext_resource type="Script" uid="uid://bp2e70o1cjn8a" path="res://scripts/level_mask_cleaning.gd" id="5_3d3y3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lx7qe"]
+shader = ExtResource("4_3kmpq")
 
 [node name="DemoLevel" type="Node2D"]
 script = ExtResource("2_k0kt4")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Clean" type="Sprite2D" parent="."]
+texture = ExtResource("2_7mb11")
+
+[node name="Dirty" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_lx7qe")
 texture = ExtResource("1_hn0ad")
 
 [node name="PowerWasher" parent="." instance=ExtResource("3_r6w5h")]
 z_index = 10
+contact_radius_px = 40.0
+
+[node name="MaskCleaning" type="Node" parent="."]
+script = ExtResource("5_3d3y3")
+water_strength_grades_per_second = 10000.0
+dirty_sprite_path = NodePath("../Dirty")
+clean_sprite_path = NodePath("../Clean")
+power_washer_path = NodePath("../PowerWasher")
+water_contact_path = NodePath("../PowerWasher/WaterContact")
