@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://c1m3m5a7r6r8o"]
+
+[ext_resource type="Texture2D" path="res://assets/levels/demo/dirty.png" id="1_hn0ad"]
+[ext_resource type="Texture2D" path="res://assets/powerwasher.png" id="2_qp0q7"]
+[ext_resource type="Script" path="res://scripts/demo_level.gd" id="3_xk2v6"]
+[ext_resource type="Script" path="res://scripts/power_washer_drag.gd" id="4_7ndk2"]
+
+[node name="DemoLevel" type="Node2D"]
+script = ExtResource("3_xk2v6")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_hn0ad")
+
+[node name="PowerWasher" type="Sprite2D" parent="."]
+centered = false
+z_index = 10
+texture = ExtResource("2_qp0q7")
+script = ExtResource("4_7ndk2")
