@@ -1,15 +1,10 @@
 extends Node2D
 
-@export var nozzle_to_target_offset := Vector2(260, 340)
-@export var right_edge_margin_px := 0.0
-
 @export_range(1.0, 256.0, 1.0, "or_greater") var contact_radius_px := 20.0:
 	set(value):
 		contact_radius_px = value
 		_apply_contact_radius()
 
-@onready var sprite: Sprite2D = $Sprite
-@onready var nozzle: Marker2D = $Nozzle
 @onready var water_contact: Area2D = $WaterContact
 @onready var water_contact_shape: CollisionShape2D = $WaterContact/CollisionShape2D
 
@@ -20,8 +15,6 @@ var target_point := Vector2.ZERO
 func _ready() -> void:
 	scale = Vector2.ONE
 	rotation = 0.0
-	sprite.scale = Vector2.ONE
-	sprite.rotation = 0.0
 	_apply_contact_radius()
 
 
@@ -84,21 +77,8 @@ func _set_target(pos: Vector2) -> void:
 		clampf(pos.x, viewport_rect.position.x, viewport_rect.end.x),
 		clampf(pos.y, viewport_rect.position.y, viewport_rect.end.y)
 	)
-
-	_apply_translation_only_placement(viewport_rect)
-
-
-func _apply_translation_only_placement(viewport_rect: Rect2) -> void:
-	var desired_nozzle := target_point + nozzle_to_target_offset
-	global_position = desired_nozzle - nozzle.position
-
-	if sprite.texture == null:
-		return
-	var tex_size := sprite.texture.get_size() * sprite.global_scale.abs()
-	var right_edge_x := global_position.x + tex_size.x
-	var min_right_edge_x := viewport_rect.end.x + right_edge_margin_px
-	if right_edge_x < min_right_edge_x:
-		global_position.x += min_right_edge_x - right_edge_x
+	var delta := target_point - water_contact.global_position
+	global_position += delta
 
 
 func _apply_contact_radius() -> void:

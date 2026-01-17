@@ -18,48 +18,30 @@ This document describes the game logic at a high level. Add new sections here as
 Result:
 - The player can point at any pixel on screen, so the water stream can “reach every point of the screen”.
 
-### Nozzle Point Definition
-The power washer sprite must have a stable, author-defined nozzle location.
+### Contact Point Definition (`WaterContact`)
+The washer scene defines a `WaterContact` point (an `Area2D` with a circular collision shape). This point represents where the water hits the level (the red dot).
 
-Implementation expectation:
-- Store a local-space `nozzle_offset_px` on the washer sprite (in pixels), measured from the sprite's top-left corner (no scaling/rotation).
-- `nozzle_point = washer_pos + nozzle_offset_px`
+We want the `WaterContact` point to be authorable in the scene editor, so its local position is never modified at runtime.
 
-This avoids guessing where the nozzle is inside the texture.
-
-### Translation-Only Placement (No Rotation, No Scaling)
-The washer sprite never rotates and never scales. Instead, we move it (often partially off-screen) so the nozzle can still “shoot” at any `target_point`.
-
-We define a constant screen-space offset that places the nozzle behind the target, toward the bottom-right:
-- `nozzle_to_target_offset = Vector2(+x, +y)` (both positive)
+### Translation-Only Placement (Finger → `WaterContact`)
+The washer never rotates and never scales. We only translate the entire washer so that `WaterContact` sits under the finger.
 
 Placement each frame while spraying:
-1. Compute the desired nozzle position:
-   - `desired_nozzle = target_point + nozzle_to_target_offset`
-2. Convert that into the washer sprite position:
-   - `washer_pos = desired_nozzle - nozzle_offset_px`
+1. Compute the clamped `target_point` from the finger.
+2. Shift the washer by the delta between the current contact point and the target:
+   - `delta = target_point - water_contact.global_position`
+   - `washer.global_position += delta`
 
-### Positioning (Keeping the Washer Off the Right Side)
-We intentionally keep the washer on the right side of the screen, often partially off-screen, so the player sees the level and the stream rather than the entire tool.
+Result:
+- `water_contact.global_position == target_point`, so the water “reaches” every point on screen.
 
-Constraint:
-- The **right edge of the washer sprite must never be inside the screen**.
-  - It can be exactly on the right border, or outside the viewport.
+### Nozzle Point Definition
+The washer scene also defines a `Nozzle` marker point. Later, the water stream will be drawn from `Nozzle.global_position` to `WaterContact.global_position`.
 
-Logic:
-1. Compute `washer_pos` from the `target_point` (see “Translation-Only Placement”).
-2. Enforce the “right edge” constraint using the unrotated texture bounds:
-   - `right_edge_x = washer_pos.x + washer_texture_width`
-   - If `right_edge_x < viewport_rect.end.x`, push it right by:
-     - `washer_pos.x += viewport_rect.end.x - right_edge_x`
+### Notes
+- This model does not enforce “keep the washer on the right edge”. If we want that constraint again later, we can apply an additional post-step that pushes the washer right after aligning `WaterContact`.
 
-Outcome:
-- For most targets, the washer is partially visible but clipped by the right edge.
-- When the player targets the **bottom-right corner**, the needed rotation + constraint push can move the entire sprite outside the viewport, while the stream still hits the target point.
-
-### Drawing the Water Stream
-The stream is always drawn from `nozzle_point` to `target_point`:
-- `stream_segment.start = nozzle_point`
-- `stream_segment.end = target_point`
+### Drawing the Water Stream (Later)
+The stream will be drawn from `Nozzle.global_position` to `WaterContact.global_position`.
 
 This stays correct even when the washer sprite is partially or fully off-screen.

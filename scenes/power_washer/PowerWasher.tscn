@@ -17,7 +17,7 @@ centered = false
 position = Vector2(4, 7)
 
 [node name="WaterContact" type="Area2D" parent="."]
-position = Vector2(-354, -114)
+position = Vector2(-295, -235)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WaterContact"]
 shape = SubResource("CircleShape2D_0d3rq")
