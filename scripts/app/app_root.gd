@@ -6,6 +6,11 @@ const LEVELS := [
 		"name": "Demo",
 		"scene": "res://scenes/levels/DemoLevel.tscn",
 	},
+	{
+		"id": "level001",
+		"name": "Dirt Bike",
+		"scene": "res://scenes/levels/Level001.tscn",
+	},
 ]
 
 @export var level_select_scene: PackedScene
