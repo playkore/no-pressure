@@ -1,0 +1,1 @@
+This dir contains Godot web export. It will be deployed to GitHub Pages.
