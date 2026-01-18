@@ -1,0 +1,49 @@
+[gd_scene load_steps=11 format=3 uid="uid://dax3rb5gu234f"]
+
+[ext_resource type="Script" uid="uid://cblewqk6pcqx5" path="res://scripts/demo_level.gd" id="1_0l3oi"]
+[ext_resource type="Texture2D" uid="uid://kfn10accr8jj" path="res://assets/levels/demo/clean.png" id="2_5ypnm"]
+[ext_resource type="Shader" uid="uid://ds7lppumrs3op" path="res://shaders/dirty_reveal.gdshader" id="3_06w7e"]
+[ext_resource type="Texture2D" uid="uid://nmir3qk8u5gj" path="res://assets/levels/demo/dirty.png" id="4_2iq81"]
+[ext_resource type="PackedScene" uid="uid://d2g1o1w6w8c4n" path="res://scenes/power_washer/PowerWasher.tscn" id="5_n1m61"]
+[ext_resource type="PackedScene" uid="uid://c2j1u1xvfxw4r" path="res://scenes/vfx/WaterVfx.tscn" id="6_85lyy"]
+[ext_resource type="Script" uid="uid://bp2e70o1cjn8a" path="res://scripts/level_mask_cleaning.gd" id="7_vltbs"]
+[ext_resource type="Texture2D" uid="uid://c65etpfecgg5g" path="res://assets/levels/demo/mask.png" id="8_7o8w5"]
+[ext_resource type="PackedScene" uid="uid://c7a4i5d6p1w0n" path="res://scenes/ui/TopHud.tscn" id="9_khnmn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lx7qe"]
+shader = ExtResource("3_06w7e")
+
+[node name="DemoLevel" type="Node2D"]
+script = ExtResource("1_0l3oi")
+star_time_1_seconds = 40.0
+star_time_2_seconds = 38.0
+
+[node name="Clean" type="Sprite2D" parent="."]
+texture = ExtResource("2_5ypnm")
+
+[node name="Dirty" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_lx7qe")
+texture = ExtResource("4_2iq81")
+
+[node name="PowerWasher" parent="." instance=ExtResource("5_n1m61")]
+z_index = 10
+contact_radius_px = 40.0
+
+[node name="WaterVfx" parent="." instance=ExtResource("6_85lyy")]
+power_washer_path = NodePath("../PowerWasher")
+nozzle_path = NodePath("../PowerWasher/Nozzle")
+water_contact_path = NodePath("../PowerWasher/WaterContact")
+z_index = 6
+
+[node name="MaskCleaning" type="Node" parent="."]
+script = ExtResource("7_vltbs")
+water_strength_grades_per_second = 10000.0
+dirty_sprite_path = NodePath("../Dirty")
+clean_sprite_path = NodePath("../Clean")
+initial_requirement_mask_texture = ExtResource("8_7o8w5")
+power_washer_path = NodePath("../PowerWasher")
+water_contact_path = NodePath("../PowerWasher/WaterContact")
+
+[node name="TopHud" parent="." instance=ExtResource("9_khnmn")]
+cleaning_path = NodePath("../MaskCleaning")
+timer_path = NodePath("..")
