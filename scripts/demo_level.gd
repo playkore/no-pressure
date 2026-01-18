@@ -50,7 +50,9 @@ func _fit_level_art(viewport_size: Vector2) -> void:
 	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
 		return
 
-	var scale_factor := maxf(viewport_size.x / tex_size.x, viewport_size.y / tex_size.y)
+	# Fit the full image on screen without horizontal cropping.
+	# This makes the image width fit the viewport; height may letterbox.
+	var scale_factor := minf(viewport_size.x / tex_size.x, viewport_size.y / tex_size.y)
 	clean.scale = Vector2.ONE * scale_factor
 	dirty.scale = Vector2.ONE * scale_factor
 	clean.global_position = viewport_size * 0.5
